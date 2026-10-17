@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"SAPSE.vscode-cds",
+		"SAPSE.sap-ux-fiori-tools-extension-pack",
+		"dbaeumer.vscode-eslint",
+		"mechatroner.rainbow-csv",
+		"qwtel.sqlite-viewer",
+		"humao.rest-client"
+	]
+}

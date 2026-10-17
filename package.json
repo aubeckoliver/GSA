@@ -1,0 +1,23 @@
+{
+  "name": "GSA",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cap-js/sqlite": "^3.1.2",
+    "@sap/cds": "^10"
+  },
+  "scripts": {
+    "start": "cds-serve"
+  },
+  "private": true,
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
+        }
+      }
+    }
+  }
+}
