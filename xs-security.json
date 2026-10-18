@@ -1,0 +1,52 @@
+{
+  "xsappname": "gsa",
+  "tenant-mode": "dedicated",
+  "description": "Galactic Spacefarer Application",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.SpacefarerViewer",
+      "description": "Read spacefarers of own planet"
+    },
+    {
+      "name": "$XSAPPNAME.SpacefarerAdmin",
+      "description": "Create, read, update and delete spacefarers of own planet"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "planet",
+      "description": "Planet whose spacefarers the user may access",
+      "valueType": "s",
+      "valueRequired": true
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "SpacefarerViewer",
+      "description": "Read spacefarers of the assigned planet",
+      "scope-references": [
+        "$XSAPPNAME.SpacefarerViewer"
+      ],
+      "attribute-references": [
+        "planet"
+      ]
+    },
+    {
+      "name": "SpacefarerAdmin",
+      "description": "Manage spacefarers of the assigned planet",
+      "scope-references": [
+        "$XSAPPNAME.SpacefarerAdmin"
+      ],
+      "attribute-references": [
+        "planet"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "token-validity": 900,
+    "refresh-token-validity": 3600,
+    "redirect-uris": [
+      "http://localhost:5000/**"
+    ]
+  }
+}

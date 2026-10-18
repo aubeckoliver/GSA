@@ -4,7 +4,8 @@
   "type": "module",
   "dependencies": {
     "@cap-js/sqlite": "^3.1.2",
-    "@sap/cds": "^10"
+    "@sap/cds": "^10",
+    "@sap/xssec": "^4"
   },
   "scripts": {
     "start": "cds-serve"
@@ -17,6 +18,9 @@
         "credentials": {
           "url": "db.sqlite"
         }
+      },
+      "[production]": {
+        "auth": "xsuaa"
       }
     }
   }
