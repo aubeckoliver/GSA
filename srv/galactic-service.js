@@ -1,11 +1,12 @@
 import cds from '@sap/cds'
 
-const STARDUST_WELCOME_BONUS = 100
-const STARDUST_PER_SKILL_BOOST = 1000
+const FUEL_PER_DISTANCE_UNIT = 10
+const FUEL_DISCOUNT_PERCENT_PER_SKILL_LEVEL = 5
 
 export default class GalacticService extends cds.ApplicationService {
   init() {
     const { Spacefarers } = this.entities
+    const { Planets, Positions } = cds.entities('galactic')
     const { stardustCollection: stardustElement, wormholeNavigationSkill: navSkillElement } = Spacefarers.elements
     const [minStardust] = stardustElement['@assert.range']
     const defaultStardust = stardustElement.default?.val ?? minStardust
@@ -16,7 +17,7 @@ export default class GalacticService extends cds.ApplicationService {
       const planet = req.user.attr?.planet
       if (!planet) return req.reject(403, 'No planet assigned to your user')
 
-      const target = req.data.originPlanet
+      const target = req.data.originPlanet_name
       if (req.event === 'CREATE' || target !== undefined) {
         if (target !== planet) {
           return req.reject(403, `You may only manage spacefarers from planet ${planet}`)
@@ -24,7 +25,7 @@ export default class GalacticService extends cds.ApplicationService {
       }
     })
 
-    this.before('CREATE', Spacefarers, req => {
+    this.before('CREATE', Spacefarers, async req => {
       if (req.errors) return
 
       const data = req.data
@@ -39,9 +40,23 @@ export default class GalacticService extends cds.ApplicationService {
       }
       if (req.errors) return
 
-      data.stardustCollection = stardust + STARDUST_WELCOME_BONUS
-      const skillBoost = Math.floor(stardust / STARDUST_PER_SKILL_BOOST)
-      data.wormholeNavigationSkill = Math.min(skill + skillBoost, maxNavigationSkill)
+      const origin = await SELECT.one.from(Planets, data.originPlanet_name)
+      const target = await SELECT.one.from(Positions, data.targetPosition_ID)
+
+      const distance = Math.hypot(
+        Number(target.location_x ?? 0) - Number(origin.location_x ?? 0),
+        Number(target.location_y ?? 0) - Number(origin.location_y ?? 0)
+      )
+
+      const discountPercent = FUEL_DISCOUNT_PERCENT_PER_SKILL_LEVEL * (skill - minNavigationSkill)
+      const requiredFuel = Math.ceil((distance * FUEL_PER_DISTANCE_UNIT * (100 - discountPercent)) / 100)
+      if (stardust < requiredFuel) {
+        return req.error(
+          400,
+          `Not enough stardust for the journey to target position ${target.title}: ${requiredFuel} needed, ${stardust} available`,
+          'stardustCollection'
+        )
+      }
     })
 
     return super.init()

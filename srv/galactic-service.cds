@@ -8,7 +8,7 @@ service GalacticService {
     {
       grant: 'READ',
       to   : 'SpacefarerViewer',
-      where: 'originPlanet = $user.planet'
+      where: 'originPlanet_name = $user.planet'
     },
     {
       grant: [
@@ -18,7 +18,7 @@ service GalacticService {
         'DELETE'
       ],
       to   : 'SpacefarerAdmin',
-      where: 'originPlanet = $user.planet'
+      where: 'originPlanet_name = $user.planet'
     }
   ]
   entity Spacefarers     as projection on db.Spacefarers;
@@ -43,4 +43,11 @@ service GalacticService {
     'SpacefarerAdmin'
   ]
   entity SpacesuitColors as projection on db.SpacesuitColors;
+
+  @readonly
+  @requires: [
+    'SpacefarerViewer',
+    'SpacefarerAdmin'
+  ]
+  entity Planets         as projection on db.Planets;
 }
