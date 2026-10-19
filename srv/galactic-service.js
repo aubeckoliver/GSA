@@ -11,7 +11,7 @@ export default class GalacticService extends cds.ApplicationService {
     const { stardustCollection: stardustElement, wormholeNavigationSkill: navSkillElement } = Spacefarers.elements
     const [minStardust] = stardustElement['@assert.range']
     const defaultStardust = stardustElement.default?.val ?? minStardust
-    const [minNavigationSkill, maxNavigationSkill] = navSkillElement['@assert.range']
+    const [minNavigationSkill] = navSkillElement['@assert.range']
     const defaultNavigationSkill = navSkillElement.default?.val ?? minNavigationSkill
 
     this.before(['CREATE', 'UPDATE'], Spacefarers, req => {
