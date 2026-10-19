@@ -35,7 +35,7 @@ service GalacticService {
     'SpacefarerViewer',
     'SpacefarerAdmin'
   ]
-  entity Positions       as projection on db.Positions excluding { spacefarers };
+  entity Locations       as projection on db.Locations excluding { spacefarers };
 
   @readonly
   @requires: [

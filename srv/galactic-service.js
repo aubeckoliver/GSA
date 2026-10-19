@@ -4,9 +4,10 @@ const FUEL_PER_DISTANCE_UNIT = 10
 const FUEL_DISCOUNT_PERCENT_PER_SKILL_LEVEL = 5
 
 export default class GalacticService extends cds.ApplicationService {
-  init() {
+  async init() {
+    const mail = await cds.connect.to('mail')
     const { Spacefarers } = this.entities
-    const { Planets, Positions } = cds.entities('galactic')
+    const { Planets, Locations } = cds.entities('galactic')
     const { stardustCollection: stardustElement, wormholeNavigationSkill: navSkillElement } = Spacefarers.elements
     const [minStardust] = stardustElement['@assert.range']
     const defaultStardust = stardustElement.default?.val ?? minStardust
@@ -41,7 +42,7 @@ export default class GalacticService extends cds.ApplicationService {
       if (req.errors) return
 
       const origin = await SELECT.one.from(Planets, data.originPlanet_name)
-      const target = await SELECT.one.from(Positions, data.targetPosition_ID)
+      const target = await SELECT.one.from(Locations, data.targetLocation_ID)
 
       const distance = Math.hypot(
         Number(target.location_x ?? 0) - Number(origin.location_x ?? 0),
@@ -53,7 +54,7 @@ export default class GalacticService extends cds.ApplicationService {
       if (stardust < requiredFuel) {
         return req.error(
           400,
-          `Not enough stardust for the journey to target position ${target.title}: ${requiredFuel} needed, ${stardust} available`,
+          `Not enough stardust for the journey to target location ${target.name}: ${requiredFuel} needed, ${stardust} available`,
           'stardustCollection'
         )
       }

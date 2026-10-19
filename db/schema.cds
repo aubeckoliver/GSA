@@ -20,23 +20,20 @@ entity Spacefarers : cuid, managed {
   originPlanet            : Association to Planets @mandatory @assert.target;
   spacesuitColor          : Association to SpacesuitColors;
   department              : Association to Departments;
-  targetPosition          : Association to Positions @mandatory @assert.target;
+  targetLocation          : Association to Locations @mandatory @assert.target;
 }
 
 entity Departments : cuid, managed {
   name        : String(100) @mandatory;
   description : String(1000);
-  positions   : Composition of many Positions on positions.department = $self;
   spacefarers : Association to many Spacefarers on spacefarers.department = $self;
 }
 
-entity Positions : cuid, managed {
-  title       : String(100) @mandatory;
-  rank        : Integer @assert.range: [1, 10];
+entity Locations : cuid, managed {
+  name        : String(100) @mandatory;
   description : String(1000);
   location    : Coordinates;
-  department  : Association to Departments;
-  spacefarers : Association to many Spacefarers on spacefarers.targetPosition = $self;
+  spacefarers : Association to many Spacefarers on spacefarers.targetLocation = $self;
 }
 
 entity Planets : managed {
