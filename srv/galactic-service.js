@@ -21,7 +21,7 @@ export default class GalacticService extends cds.ApplicationService {
       const target = req.data.originPlanet_name
       if (req.event === 'CREATE' || target !== undefined) {
         if (target !== planet) {
-          return req.reject(403, `You may only manage spacefarers from planet ${planet}`)
+          return req.reject(403, `You may only manage spacefarers from planet ${planet}`, 'originPlanet_name')
         }
       }
     })
