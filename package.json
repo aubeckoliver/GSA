@@ -9,7 +9,8 @@
     "nodemailer": "^10.1.7"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-spacefarers": "cds watch --open spacefarers/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
@@ -27,7 +28,47 @@
       },
       "[production]": {
         "auth": "xsuaa"
+      },
+      "[development]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "viewer": {
+              "roles": [
+                "SpacefarerViewer"
+              ],
+              "attr": {
+                "planet": "Earth"
+              }
+            },
+            "admin": {
+              "roles": [
+                "SpacefarerAdmin"
+              ],
+              "attr": {
+                "planet": "Earth"
+              }
+            },
+            "martian": {
+              "roles": [
+                "SpacefarerViewer"
+              ],
+              "attr": {
+                "planet": "Mars"
+              }
+            }
+          }
+        }
       }
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "sapux": [
+    "app/spacefarers"
+  ]
 }

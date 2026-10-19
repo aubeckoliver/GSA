@@ -12,3 +12,23 @@ CDS_REQUIRES_MAIL_CREDENTIALS_PORT=587
 CDS_REQUIRES_MAIL_CREDENTIALS_AUTH_USER=...
 CDS_REQUIRES_MAIL_CREDENTIALS_AUTH_PASS=...
 ```
+
+## Spacefarers UI
+
+A Fiori elements List Report ([app/spacefarers](app/spacefarers)) lists spacefarers with their stardust collection and spacesuit color.
+
+Run it locally:
+
+```sh
+npm install
+cds deploy
+npm run watch-spacefarers
+```
+
+For test, use one of these mocked users (empty password):
+
+| User      | Role             | Planet |
+| --------- | ---------------- | ------ |
+| `viewer`  | SpacefarerViewer | Earth  |
+| `admin`   | SpacefarerAdmin  | Earth  |
+| `martian` | SpacefarerViewer | Mars   |
