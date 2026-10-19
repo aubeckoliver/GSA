@@ -14,14 +14,15 @@ export default class GalacticService extends cds.ApplicationService {
     const [minNavigationSkill] = navSkillElement['@assert.range']
     const defaultNavigationSkill = navSkillElement.default?.val ?? minNavigationSkill
 
-    this.before(['CREATE', 'UPDATE'], Spacefarers, req => {
+    this.before(['CREATE', 'UPDATE'], Spacefarers, async req => {
       const planet = req.user.attr?.planet
       if (!planet) return req.reject(403, 'No planet assigned to your user')
 
-      const target = req.data.originPlanet_name
+      const target = req.data.originPlanet_code
       if (req.event === 'CREATE' || target !== undefined) {
         if (target !== planet) {
-          return req.reject(403, `You may only manage spacefarers from planet ${planet}`, 'originPlanet_name')
+          const own = await SELECT.one.from(Planets, planet).columns('name')
+          return req.reject(403, `You may only manage spacefarers from planet ${own?.name ?? planet}`, 'originPlanet_code')
         }
       }
     })
@@ -31,7 +32,7 @@ export default class GalacticService extends cds.ApplicationService {
 
       let data = req.data
       if (req.event === 'UPDATE') {
-        const relevant = ['stardustCollection', 'wormholeNavigationSkill', 'originPlanet_name', 'targetLocation_ID']
+        const relevant = ['stardustCollection', 'wormholeNavigationSkill', 'originPlanet_code', 'targetLocation_ID']
 
         if (!data.ID || !relevant.some(element => element in data)) return
         const current = await SELECT.one.from(cds.entities('galactic').Spacefarers, data.ID)
@@ -54,7 +55,7 @@ export default class GalacticService extends cds.ApplicationService {
       }
       if (req.errors) return
 
-      const origin = await SELECT.one.from(Planets, data.originPlanet_name)
+      const origin = await SELECT.one.from(Planets, data.originPlanet_code)
       const target = await SELECT.one.from(Locations, data.targetLocation_ID)
       if (!origin || !target) return
       const distance = Math.hypot(
@@ -78,7 +79,9 @@ export default class GalacticService extends cds.ApplicationService {
     }))
 
     this.after('CREATE', Spacefarers, async (_, req) => {
-      const { firstName, lastName, email, originPlanet_name: planet, targetLocation_ID } = req.data
+      const { firstName, lastName, email, originPlanet_code, targetLocation_ID } = req.data
+      const origin = await SELECT.one.from(Planets, originPlanet_code).columns('name')
+      const planet = origin?.name ?? 'your planet'
       const target = await SELECT.one.from(Locations, targetLocation_ID).columns('name')
       const destination = target?.name ?? 'your destination'
 

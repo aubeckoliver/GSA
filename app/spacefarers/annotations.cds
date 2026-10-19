@@ -7,7 +7,10 @@ annotate service.Spacefarers with {
     email                   @title: 'Email';
     stardustCollection      @title: 'Stardust Collection';
     wormholeNavigationSkill @title: 'Wormhole Navigation Skill';
-    originPlanet            @title: 'Origin Planet';
+    originPlanet            @title: 'Origin Planet'    @Common: {
+        Text           : originPlanet.name,
+        TextArrangement: #TextOnly
+    };
     spacesuitColor          @title: 'Spacesuit Color'  @Common: {
         Text                    : spacesuitColor.name,
         TextArrangement         : #TextOnly,
@@ -38,7 +41,7 @@ annotate service.Spacefarers with @(
         firstName,
         stardustCollection,
         spacesuitColor_code,
-        originPlanet_name,
+        originPlanet_code,
         department_ID,
         targetLocation_ID
     ],
@@ -60,7 +63,7 @@ annotate service.Spacefarers with @(
             ![@UI.Importance]: #High
         },
         {Value: wormholeNavigationSkill},
-        {Value: originPlanet_name},
+        {Value: originPlanet_code},
         {Value: department_ID},
         {Value: targetLocation_ID},
         {Value: email}
@@ -84,7 +87,7 @@ annotate service.Spacefarers with @(
     },
     UI.FieldGroup #CosmicHeader: {Data: [
         {Value: spacesuitColor_code},
-        {Value: originPlanet_name},
+        {Value: originPlanet_code},
         {Value: targetLocation_ID}
     ]},
     UI.HeaderFacets       : [
@@ -112,7 +115,7 @@ annotate service.Spacefarers with @(
         {Value: wormholeNavigationSkill}
     ]},
     UI.FieldGroup #Journey: {Data: [
-        {Value: originPlanet_name},
+        {Value: originPlanet_code},
         {Value: targetLocation_ID},
         {Value: department_ID}
     ]},
@@ -153,11 +156,17 @@ annotate service.Spacefarers with @(
 annotate service.Spacefarers with {
     originPlanet   @Common.ValueList: {
         CollectionPath: 'Planets',
-        Parameters    : [{
-            $Type            : 'Common.ValueListParameterInOut',
-            LocalDataProperty: originPlanet_name,
-            ValueListProperty: 'name'
-        }]
+        Parameters    : [
+            {
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: originPlanet_code,
+                ValueListProperty: 'code'
+            },
+            {
+                $Type            : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty: 'name'
+            }
+        ]
     };
     department     @Common.ValueList: {
         CollectionPath: 'Departments',
@@ -217,5 +226,9 @@ annotate service.Locations with {
 };
 
 annotate service.Planets with {
-    name @title: 'Planet';
+    code @title: 'Planet'  @Common: {
+        Text           : name,
+        TextArrangement: #TextOnly
+    };
+    name @title: 'Name';
 };

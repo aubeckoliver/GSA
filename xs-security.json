@@ -15,7 +15,7 @@
   "attributes": [
     {
       "name": "planet",
-      "description": "Planet whose spacefarers the user may access",
+      "description": "Code of the planet whose spacefarers the user may access",
       "valueType": "s",
       "valueRequired": true
     }

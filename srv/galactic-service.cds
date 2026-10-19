@@ -8,7 +8,7 @@ service GalacticService {
     {
       grant: 'READ',
       to   : 'SpacefarerViewer',
-      where: 'originPlanet_name = $user.planet'
+      where: 'originPlanet_code = $user.planet'
     },
     {
       grant: [
@@ -18,7 +18,7 @@ service GalacticService {
         'DELETE'
       ],
       to   : 'SpacefarerAdmin',
-      where: 'originPlanet_name = $user.planet'
+      where: 'originPlanet_code = $user.planet'
     }
   ]
   @odata.draft.enabled

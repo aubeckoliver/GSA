@@ -37,7 +37,8 @@ entity Locations : cuid, managed {
 }
 
 entity Planets : managed {
-  key name     : String(100);
+  key code     : String(20);
+      name     : String(100) @mandatory;
       location : Coordinates;
 }
 
