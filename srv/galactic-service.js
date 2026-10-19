@@ -60,6 +60,23 @@ export default class GalacticService extends cds.ApplicationService {
       }
     })
 
+    this.after('CREATE', Spacefarers, async (_, req) => {
+      const { firstName, lastName, email, originPlanet_name: planet, targetLocation_ID } = req.data
+      const target = await SELECT.one.from(Locations, targetLocation_ID).columns('name')
+      const destination = target?.name ?? 'your destination'
+
+      await mail.send('sendMail', {
+        to: email,
+        subject: `Welcome aboard, ${firstName}! Your cosmic journey begins`,
+        text:
+          `Greetings, ${firstName} ${lastName}!\n\n` +
+          `Congratulations on launching from ${planet}! You are now officially a spacefarer, ` +
+          `headed to ${destination}.\n\n` +
+          `Wishing you safe travel and clear skies on your journey among the stars.\n\n` +
+          `Galactic Spacefarer Adventure`
+      })
+    })
+
     return super.init()
   }
 }
