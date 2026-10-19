@@ -15,8 +15,8 @@ entity Spacefarers : cuid, managed {
   firstName               : String(50) @mandatory;
   lastName                : String(50) @mandatory;
   email                   : String(100) @mandatory @assert.format: '^[^\s@]+@[^\s@]+\.[^\s@]+$';
-  stardustCollection      : Integer default 0 @assert.range: [0, _];
-  wormholeNavigationSkill : Integer default 1 @assert.range: [1, 10];
+  stardustCollection      : Integer default 0 @mandatory @assert.range: [0, _];
+  wormholeNavigationSkill : Integer default 1 @mandatory @assert.range: [1, 10];
   originPlanet            : Association to Planets @mandatory @assert.target;
   spacesuitColor          : Association to SpacesuitColors;
   department              : Association to Departments;
