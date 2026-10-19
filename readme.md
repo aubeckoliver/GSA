@@ -38,3 +38,7 @@ For test, use one of these mocked users (empty password):
 | `viewer`  | SpacefarerViewer | Earth  |
 | `admin`   | SpacefarerAdmin  | Earth  |
 | `martian` | SpacefarerViewer | Mars   |
+
+## Generated data for test
+
+There are csv files with generated data for testing: `galactic-Departments.csv`, `galactic-Locations.csv`, `galactic-Planets.csv`, `galactic-Spacefarers.csv`, `galactic-SpacesuitColors.csv`
