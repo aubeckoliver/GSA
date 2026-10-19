@@ -24,6 +24,9 @@ annotate service.Spacefarers with {
 };
 
 annotate service.Spacefarers with @(
+    UI.CreateHidden       : {$edmJson: {$Path: '/GalacticService.EntityContainer/UserCapabilities/manageSpacefarersHidden'}},
+    UI.UpdateHidden       : {$edmJson: {$Path: '/GalacticService.EntityContainer/UserCapabilities/manageSpacefarersHidden'}},
+    UI.DeleteHidden       : {$edmJson: {$Path: '/GalacticService.EntityContainer/UserCapabilities/manageSpacefarersHidden'}},
     UI.HeaderInfo         : {
         TypeName      : 'Spacefarer',
         TypeNamePlural: 'Spacefarers',
@@ -69,31 +72,80 @@ annotate service.Spacefarers with @(
         }],
         Visualizations: ['@UI.LineItem']
     },
+    UI.DataPoint #Stardust: {
+        Value: stardustCollection,
+        Title: 'Stardust Collection'
+    },
+    UI.DataPoint #NavigationSkill: {
+        Value        : wormholeNavigationSkill,
+        Title        : 'Wormhole Navigation Skill',
+        TargetValue  : 10,
+        Visualization: #Rating
+    },
+    UI.FieldGroup #CosmicHeader: {Data: [
+        {Value: spacesuitColor_code},
+        {Value: originPlanet_name},
+        {Value: targetLocation_ID}
+    ]},
+    UI.HeaderFacets       : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'StardustHeader',
+            Target: '@UI.DataPoint#Stardust'
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'NavigationSkillHeader',
+            Target: '@UI.DataPoint#NavigationSkill'
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID    : 'CosmicHeader',
+            Label : 'Cosmic Profile',
+            Target: '@UI.FieldGroup#CosmicHeader'
+        }
+    ],
+    // Cosmic Object Page: sections
+    UI.FieldGroup #Cosmic : {Data: [
+        {Value: stardustCollection},
+        {Value: spacesuitColor_code},
+        {Value: wormholeNavigationSkill}
+    ]},
+    UI.FieldGroup #Journey: {Data: [
+        {Value: originPlanet_name},
+        {Value: targetLocation_ID},
+        {Value: department_ID}
+    ]},
     UI.FieldGroup #General: {Data: [
         {Value: firstName},
         {Value: lastName},
-        {Value: email},
-        {Value: originPlanet_name},
-        {Value: department_ID}
-    ]},
-    UI.FieldGroup #Journey: {Data: [
-        {Value: stardustCollection},
-        {Value: wormholeNavigationSkill},
-        {Value: spacesuitColor_code},
-        {Value: targetLocation_ID}
+        {Value: email}
     ]},
     UI.Facets             : [
+        {
+            $Type : 'UI.CollectionFacet',
+            ID    : 'CosmicDetails',
+            Label : 'Cosmic Details',
+            Facets: [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : 'Cosmic',
+                    Label : 'Cosmic Profile',
+                    Target: '@UI.FieldGroup#Cosmic'
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    ID    : 'Journey',
+                    Label : 'Cosmic Journey',
+                    Target: '@UI.FieldGroup#Journey'
+                }
+            ]
+        },
         {
             $Type : 'UI.ReferenceFacet',
             ID    : 'General',
             Label : 'General Information',
             Target: '@UI.FieldGroup#General'
-        },
-        {
-            $Type : 'UI.ReferenceFacet',
-            ID    : 'Journey',
-            Label : 'Cosmic Journey',
-            Target: '@UI.FieldGroup#Journey'
         }
     ]
 );

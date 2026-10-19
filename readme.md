@@ -17,6 +17,12 @@ CDS_REQUIRES_MAIL_CREDENTIALS_AUTH_PASS=...
 
 A Fiori elements List Report ([app/spacefarers](app/spacefarers)) lists spacefarers with their stardust collection and spacesuit color.
 
+Selecting a spacefarer opens the **Cosmic Object Page** with detailed information:
+
+`Spacefarers` is draft-enabled, so users with role `SpacefarerAdmin` can choose _Edit_, change cosmic details such as stardust collection and spacesuit color, and _Save_ or _Discard Draft_. 
+
+Viewers get read-only access: _Create_, _Edit_ and _Delete_ are hidden.
+
 Run it locally:
 
 ```sh

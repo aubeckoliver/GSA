@@ -21,6 +21,7 @@ service GalacticService {
       where: 'originPlanet_name = $user.planet'
     }
   ]
+  @odata.draft.enabled
   entity Spacefarers     as projection on db.Spacefarers;
 
   @readonly
@@ -50,4 +51,15 @@ service GalacticService {
     'SpacefarerAdmin'
   ]
   entity Planets         as projection on db.Planets;
+
+  @odata.singleton
+  @cds.persistence.skip
+  @readonly
+  @requires: [
+    'SpacefarerViewer',
+    'SpacefarerAdmin'
+  ]
+  entity UserCapabilities {
+    manageSpacefarersHidden : Boolean;
+  }
 }

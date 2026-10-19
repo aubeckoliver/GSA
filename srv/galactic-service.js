@@ -6,7 +6,7 @@ const FUEL_DISCOUNT_PERCENT_PER_SKILL_LEVEL = 5
 export default class GalacticService extends cds.ApplicationService {
   async init() {
     const mail = await cds.connect.to('mail')
-    const { Spacefarers } = this.entities
+    const { Spacefarers, UserCapabilities } = this.entities
     const { Planets, Locations } = cds.entities('galactic')
     const { stardustCollection: stardustElement, wormholeNavigationSkill: navSkillElement } = Spacefarers.elements
     const [minStardust] = stardustElement['@assert.range']
@@ -26,10 +26,23 @@ export default class GalacticService extends cds.ApplicationService {
       }
     })
 
-    this.before('CREATE', Spacefarers, async req => {
+    this.before(['CREATE', 'UPDATE'], Spacefarers, async req => {
       if (req.errors) return
 
-      const data = req.data
+      let data = req.data
+      if (req.event === 'UPDATE') {
+        const relevant = ['stardustCollection', 'wormholeNavigationSkill', 'originPlanet_name', 'targetLocation_ID']
+
+        if (!data.ID || !relevant.some(element => element in data)) return
+        const current = await SELECT.one.from(cds.entities('galactic').Spacefarers, data.ID)
+
+        if (!current) return
+        const changed = relevant.some(element => element in data && String(data[element]) !== String(current[element]))
+        
+        if (!changed) return
+        data = { ...current, ...data }
+      }
+
       const stardust = Number(data.stardustCollection ?? defaultStardust)
       const skill = Number(data.wormholeNavigationSkill ?? defaultNavigationSkill)
 
@@ -43,7 +56,7 @@ export default class GalacticService extends cds.ApplicationService {
 
       const origin = await SELECT.one.from(Planets, data.originPlanet_name)
       const target = await SELECT.one.from(Locations, data.targetLocation_ID)
-
+      if (!origin || !target) return
       const distance = Math.hypot(
         Number(target.location_x ?? 0) - Number(origin.location_x ?? 0),
         Number(target.location_y ?? 0) - Number(origin.location_y ?? 0)
@@ -59,6 +72,10 @@ export default class GalacticService extends cds.ApplicationService {
         )
       }
     })
+
+    this.on('READ', UserCapabilities, req => ({
+      manageSpacefarersHidden: !req.user.is('SpacefarerAdmin')
+    }))
 
     this.after('CREATE', Spacefarers, async (_, req) => {
       const { firstName, lastName, email, originPlanet_name: planet, targetLocation_ID } = req.data
